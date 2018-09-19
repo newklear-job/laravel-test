@@ -38,7 +38,7 @@
       <tr>
         <td colspan="3">
           <ul class="pagination pull-right">
-            {{ $categories->links }}
+            {{ $categories->links() }}
           </ul>
         </td>
       </tr>
