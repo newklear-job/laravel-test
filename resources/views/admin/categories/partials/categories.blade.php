@@ -9,7 +9,7 @@
       @endif
 
       @if ($category->id == $category_list->id)
-        hidden=""
+        disabled
       @endif
 
     @endisset

@@ -12,8 +12,8 @@
 
   <hr />
 
-  <form class="form-horizontal" action="{{route('admin.category.update',  $category)}}" method="post">
-    <input type="hidden" name="_method" value="put">
+  <form class="form-horizontal" action="{{route('admin.category.update',  $category)}}" method="POST">
+    <input type="hidden" name="_method" value="PUT">
     {{ csrf_field() }}
 
     {{-- Form include --}}
