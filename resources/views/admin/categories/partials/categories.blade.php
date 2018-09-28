@@ -17,7 +17,7 @@
     >
     {!! $delimiter ?? "" !!}{{$category_list->title ?? ""}}
   </option>
-
+{{$category_list->children->first()["children"]}}
   @if (count($category_list->children) > 0)
 
     @include('admin.categories.partials.categories', [
