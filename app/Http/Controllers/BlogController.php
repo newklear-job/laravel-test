@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
-    public function category($slug)
+    public function category($slug=null)
     {
         $category = Category::where('slug', $slug)->first();
         return view('blog.category', [
@@ -17,7 +17,7 @@ class BlogController extends Controller
         ]);
     }
 
-    public function article($slug)
+    public function article($slug=null)
     {
       return view('blog.article', [
           'article' => Article::where('slug', $slug)->first()
