@@ -162,6 +162,7 @@ return [
 
         //Our packages
         Unisharp\Ckeditor\ServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
 
         //Own providers
         App\Providers\BlogServiceProvider::class,
@@ -214,6 +215,9 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        //Our packages
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
 
     ],
 
