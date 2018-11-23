@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Debugbar;
 use Illuminate\Http\Request;
 use Bouncer;
 class HomeController extends Controller
@@ -23,6 +24,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+        Debugbar::info('backups/backup['.date('m/d/Y H:i:s', time()).'].sql');
         return view('home');
     }
 }
