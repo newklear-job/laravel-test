@@ -25,10 +25,11 @@
           <td>{{$user->name}}</td>
           <td>{{$user->email}}</td>
           <td class="text-right">
+
             <form onsubmit="if(confirm('Удалить?')) {return true;} else {return false;}" action="{{route('admin.user_managment.user.destroy', $user)}}" method="POST">
                 {{method_field('DELETE')}}
                 {{ csrf_field()}}
-
+                <label class="role">{{ $user->roles->pluck('name') }}</label>
                 <a class="btn btn-default" href="{{route('admin.user_managment.user.edit', $user)}}"><i class="fa fa-edit"></i></a>
 
                 <button type="submit" name="value" class="btn"> <i class="fa fa-trash-o"></i> </button>

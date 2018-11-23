@@ -1,19 +1,15 @@
 @foreach ($categories as $category)
-@if ($category->children->where('published', 1)->count())
-  <li class="dropdown">
-    <a href="{{url("/blog/category/$category->slug")}}" class="dropdown-toggle"
-      data-toggle="dropdown" role="button" aria-expanded="false">
-      {{$category->title}} <span class="caret"></span>
-    </a>
-    <ul class="dropdown-menu" role="menu">
-      @include('layouts.top_menu', ['categories' => $category->children])
-    </ul>
-  @else
-    <li>
-      <a href="{{url("/blog/category/$category->slug")}}">{{$category->title}}</a>
+    <a class="" href="{{url("/blog/category/$category->slug")}}">
+    <li class="nav-item" onmouseover="this.style.backgroundColor='#aaa';" onmouseout="this.style.backgroundColor='#fff';">
+        {!! $delimiter ?? "" !!} {{$category->title}}
     </li>
-@endif
+    </a>
+    @if ($category->children->where('published', 1)->count())
+        @include('layouts.top_menu', ['categories' => $category->children, 'delimiter'  => ' - ' . $delimiter])
+    @else
+
+    @endif
 
 
-  </li>
+
 @endforeach

@@ -163,6 +163,7 @@ return [
         //Our packages
         Unisharp\Ckeditor\ServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
+        Silber\Bouncer\BouncerServiceProvider::class,
 
         //Own providers
         App\Providers\BlogServiceProvider::class,
@@ -218,6 +219,7 @@ return [
 
         //Our packages
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        'Bouncer' => Silber\Bouncer\BouncerFacade::class,
 
     ],
 

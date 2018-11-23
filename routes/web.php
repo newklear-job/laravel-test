@@ -11,10 +11,14 @@
 |
 */
 
-Route::get('blog/category/{slug?}', 'BlogController@category')->name('category');
-Route::get('blog/article/{slug?}', 'BlogController@article')->name('article');
 
-Route::group(['prefix'=>'admin', 'namespace'=>'Admin', 'middleware'=>['auth']], function(){
+Route::get('blog/category/{slug}', 'BlogController@category')->name('category');
+Route::get('blog/article/{slug}', 'BlogController@article')->name('article');
+Route::get('/', 'BlogController@start')->name('index');
+
+
+
+Route::group(['prefix'=>'admin', 'namespace'=>'Admin', 'middleware'=>['auth', 'can:access-admin-panel']], function(){
   Route::get('/', 'DashboardController@dashboard')->name('admin.index');
   Route::resource('/category', 'CategoryController', ['as'=>'admin']);
   Route::resource('/article', 'ArticleController', ['as'=>'admin']);
@@ -23,9 +27,6 @@ Route::group(['prefix'=>'admin', 'namespace'=>'Admin', 'middleware'=>['auth']], 
   });
 });
 
-Route::get('/', function () {
-    return view('blog.home');
-});
 
 Auth::routes();
 

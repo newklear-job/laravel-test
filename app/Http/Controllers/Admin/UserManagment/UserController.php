@@ -6,6 +6,9 @@ use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Debugbar;
+use Bouncer;
 
 class UserController extends Controller
 {
@@ -17,7 +20,7 @@ class UserController extends Controller
     public function index()
     {
         return view('admin.user_managment.users.index', [
-          'users' => User::paginate(10)
+            'users' => User::paginate(10)
         ]);
     }
 
@@ -29,37 +32,45 @@ class UserController extends Controller
     public function create()
     {
         return view('admin.user_managment.users.create', [
-          'user' => []
+            'user' => [],
+            'roles' => DB::table('roles')->pluck('name')
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-      $validator = $request->validate([
-          'name' => 'required|string|max:255',
-          'email' => 'required|string|email|max:255|unique:users',
-          'password' => 'required|string|min:6|confirmed',
-      ]);
+        $validator = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
 
-      User::create([
-        'name' => $request['name'],
-        'email' => $request['email'],
-        'password' => Hash::make($request['password'])
-      ]);
+        $user = User::create([
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'password' => Hash::make($request['password'])
+        ]);
 
-      return redirect()->route('admin.user_managment.user.index');
+        if ($request['roles']) {
+            foreach ($request['roles'] as $role) {
+                $user->assign($role);
+            }
+        }
+
+
+        return redirect()->route('admin.user_managment.user.index');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\User  $user
+     * @param  \App\User $user
      * @return \Illuminate\Http\Response
      */
     public function show(User $user)
@@ -70,49 +81,59 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\User  $user
+     * @param  \App\User $user
      * @return \Illuminate\Http\Response
      */
     public function edit(User $user)
     {
-      return view('admin.user_managment.users.edit', [
-        'user' => $user
-      ]);
+        return view('admin.user_managment.users.edit', [
+            'user' => $user,
+            'roles' => DB::table('roles')->pluck('name')
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\User  $user
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\User $user
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, User $user)
     {
-      $validator = $request->validate([
-          'name' => 'required|string|max:255',
-          'email' => [
-            'required',
-            'string',
-            'email',
-            'max:255',
-            \Illuminate\Validation\Rule::unique('users')->ignore($user->id),
-          ],
-          'password' => 'nullable|string|min:6|confirmed',
-      ]);
+        $validator = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                \Illuminate\Validation\Rule::unique('users')->ignore($user->id),
+            ],
+            'password' => 'nullable|string|min:6|confirmed',
+        ]);
 
-      $user->name = $request['name'];
-      $user->email = $request['email'];
-      $request['password'] == null ?: $user->password = Hash::make($request['password']);
-      $user->save();
+        $user->name = $request['name'];
+        $user->email = $request['email'];
+        $request['password'] == null ?: $user->password = Hash::make($request['password']);
 
-      return redirect()->route('admin.user_managment.user.index');
+        $user->save();
+        if ($user->id != \Auth::user()->id) {
+            Bouncer::sync($user)->roles([]);
+
+            if ($request['roles']) {
+                foreach ($request['roles'] as $role) {
+                    $user->assign($role);
+                }
+            }
+        }
+        return redirect()->route('admin.user_managment.user.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\User  $user
+     * @param  \App\User $user
      * @return \Illuminate\Http\Response
      */
     public function destroy(User $user)

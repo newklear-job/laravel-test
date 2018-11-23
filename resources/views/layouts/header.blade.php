@@ -1,16 +1,39 @@
 <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
     <div class="container">
         <a class="navbar-brand" href="{{ url('/') }}">
-            {{ config('app.name', 'Laravel') }}
+            Категории
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav mr-auto">
-                @include('layouts.top_menu')
+                @foreach ($categories as $category)
+                    @if ($category->children->where('published', 1)->count())
+                        <li class="nav-item dropdown px-2 py-2">
+                            <a href="{{url("/blog/category/$category->slug")}}">
+                                {{$category->title}}
+                            </a>
+                            <a class="dropdown-toggle"
+                               data-toggle="dropdown" role="button" aria-expanded="false">
+                                <span class="caret"></span>
+                            </a>
+
+                            <ul class="dropdown-menu" role="menu">
+                                @include('layouts.top_menu', ['categories' => $category->children, 'delimiter' => '-'])
+                            </ul>
+                        </li>
+                    @else
+                        <li class="nav-item px-2 py-2">
+                            <a class="" href="{{url("/blog/category/$category->slug")}}">{{$category->title}}</a>
+                        </li>
+                    @endif
+                @endforeach
+
+
             </ul>
 
             <!-- Right Side Of Navbar -->
@@ -18,14 +41,22 @@
                 <!-- Authentication Links -->
                 @guest
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                        <a class="nav-link"
+                           href="{{ route('login') . '?previous=' . Request::fullUrl() }}">{{ __('Login') }}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
                     </li>
                 @else
+                    @if (Auth::user()->isAn('admin'))
+                        <li class="nav-item">
+                            <a class="nav-link " href="{{route('admin.index')}}">
+                                Админ панель</a>
+                        </li>
+                    @endif
                     <li class="nav-item dropdown">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                             {{ Auth::user()->name }} <span class="caret"></span>
                         </a>
 
