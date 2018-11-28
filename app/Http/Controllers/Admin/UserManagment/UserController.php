@@ -46,7 +46,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validator = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
         ]);
@@ -102,13 +102,18 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validator = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                \Illuminate\Validation\Rule::unique('users')->ignore($user->id)
+                ],
             'email' => [
                 'required',
                 'string',
                 'email',
                 'max:255',
-                \Illuminate\Validation\Rule::unique('users')->ignore($user->id),
+                \Illuminate\Validation\Rule::unique('users')->ignore($user->id)
             ],
             'password' => 'nullable|string|min:6|confirmed',
         ]);

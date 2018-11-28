@@ -31,3 +31,6 @@ Route::group(['prefix'=>'admin', 'namespace'=>'Admin', 'middleware'=>['auth', 'c
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/profile/{name}', 'ProfileController@index')->name('profile');
+Route::post('/profile/{user}', 'ProfileController@update_avatar')->name('update_avatar');

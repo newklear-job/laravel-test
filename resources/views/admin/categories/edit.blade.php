@@ -12,7 +12,7 @@
 
   <hr />
 
-  <form class="form-horizontal" action="{{route('admin.category.update',  $category)}}" method="POST">
+  <form class="form-horizontal" action="{{route('admin.category.update',  $category)}}" method="PUT">
     <input type="hidden" name="_method" value="PUT">
     {{ csrf_field() }}
 

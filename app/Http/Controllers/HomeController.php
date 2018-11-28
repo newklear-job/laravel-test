@@ -24,7 +24,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        Debugbar::info('backups/backup['.date('m/d/Y H:i:s', time()).'].sql');
         return view('home');
     }
 }
